@@ -1,6 +1,8 @@
 import { gql } from '@apollo/client'
+import { FETCH_MOVIES, DELETE_MOVIES, ADD_MOVIE, EDIT_MOVIE, FETCH_ONE_MOVIE } from './movies'
+import { FETCH_SERIES, DELETE_SERIES, ADD_SERIES, EDIT_SERIES, FETCH_ONE_SERIAL } from './series'
 
-export const FETCH_HOME = gql`
+const FETCH_HOME = gql`
   query fetchAll {
     movies{
       _id
@@ -15,28 +17,4 @@ export const FETCH_HOME = gql`
   }
 `
 
-export const FETCH_MOVIES = gql`
-  query fetchMovies {
-    movies{
-      _id
-      title
-      overview
-      popularity
-      poster_path
-      tags
-    }
-  }
-`
-
-export const FETCH_SERIES = gql`
-  query fetchSeries {
-    series{
-      _id
-      title
-      overview
-      popularity
-      poster_path
-      tags
-    }
-  }
-`
+export { FETCH_MOVIES, DELETE_MOVIES, ADD_MOVIE, FETCH_HOME, FETCH_ONE_MOVIE, EDIT_MOVIE, FETCH_SERIES, DELETE_SERIES, ADD_SERIES, EDIT_SERIES, FETCH_ONE_SERIAL }

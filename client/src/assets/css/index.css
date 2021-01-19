@@ -6,4 +6,13 @@
   .active {
     @apply font-semibold
   }
+
+  .input {
+    @apply border p-1 rounded-md w-7/12 mb-4
+  }
+
+  .modal {
+    margin-top: -4.5rem;
+    @apply w-screen h-screen
+  }
 }
