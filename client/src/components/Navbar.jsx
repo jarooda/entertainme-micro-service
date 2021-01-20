@@ -10,7 +10,7 @@ function Navbar () {
       <div className="flex align-middle">
         <NavLink to="/movies" className="px-3 py-2">Movies</NavLink>
         <NavLink to="/series" className="px-3 py-2">Series</NavLink>
-        <p className="px-3 py-2">Favorites</p>
+        <NavLink to="/favorites" className="px-3 py-2">Favorites</NavLink>
       </div>
     </nav>
   )

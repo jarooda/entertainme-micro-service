@@ -1,11 +1,12 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
-import { Movies, Home, Series, MovieDetail, SerialDetail } from './pages'
-import { Navbar } from './components'
+import { Movies, Home, Series, MovieDetail, SerialDetail, Favorite } from './pages'
+import { Navbar, PopUp } from './components'
 
 function App() {
   return (
     <React.Fragment>
+      <PopUp />
       <Navbar />
       <Switch>
         <Route exact path="/" >
@@ -22,6 +23,9 @@ function App() {
         </Route>
         <Route path="/series">
           <Series />
+        </Route>
+        <Route path="/favorites">
+          <Favorite />
         </Route>
       </Switch>
     </React.Fragment>

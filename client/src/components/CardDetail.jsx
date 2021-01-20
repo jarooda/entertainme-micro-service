@@ -1,11 +1,26 @@
 import React from 'react'
 import { Button } from './index'
+import { favoriteMovies, favoriteSeries, toggleModal } from '../cache'
+import { GET_FAVORITES } from '../services'
+import { useQuery } from '@apollo/client'
 
-function CardDetail ({ data, toggleEdit, toggleForm }) {
+function CardDetail ({ data, toggleEdit, toggleForm, service }) {
+  const { data: fav } = useQuery(GET_FAVORITES)
 
   const showEditForm = () => {
     toggleForm(true)
     toggleEdit(data)
+  }
+
+  const toFavorite = () => {
+    if (service === 'movies') {
+      const prev = favoriteMovies()
+      favoriteMovies([...prev, data])
+    } else if (service === 'series') {
+      const prev = favoriteSeries()
+      favoriteSeries([...prev, data])
+    }
+    toggleModal({dialog: 'Success Add to Favorite', type: 'success'})
   }
 
   return (
@@ -28,7 +43,13 @@ function CardDetail ({ data, toggleEdit, toggleForm }) {
             }
           </div>
           <div className="h-full flex justify-end items-end">
-            <Button name="Add To Favorites" color="blue"/>
+            {
+              fav.moviesItem.some(e => e._id === data._id) || fav.seriesItem.some(e => e._id === data._id)
+              ?
+              ''
+              :
+              <Button name="Add To Favorites" color="blue" func={toFavorite}/>
+            }
             <Button name="Edit" color="green" func={showEditForm}/>
           </div>
         </div>

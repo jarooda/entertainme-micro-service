@@ -37,7 +37,7 @@ function Movies () {
       /> : '' }
       <h1 className="text-white text-3xl text-center font-semibold">Movies</h1>
       <div className="text-white container mx-auto my-4">
-        <div className="grid grid-cols-6 gap-6">
+        <div className="grid grid-cols-6 gap-6 px-4">
           {
             data.movies.map(e => (
               <Card

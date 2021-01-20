@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button } from './index'
 import { useMutation } from '@apollo/client'
 import { ADD_MOVIE, EDIT_MOVIE, ADD_SERIES, EDIT_SERIES } from '../services'
+import { toggleModal } from '../cache'
 
 function Form ({ toggleForm, refetch, isEdit, toggleEdit, service }) {
   const [input, setInput] = useState(isEdit ? isEdit : {
@@ -15,24 +16,40 @@ function Form ({ toggleForm, refetch, isEdit, toggleEdit, service }) {
     onCompleted: () => {
       refetch()
       close()
+      toggleModal({dialog: 'Success Add Movie', type: 'success'})
+    },
+    onError: () => {
+      toggleModal({dialog: 'Sorry, there is an error', type: 'error'})
     }
   })
   const [editMovie] = useMutation(EDIT_MOVIE, {
     onCompleted: () => {
       refetch()
       close()
+      toggleModal({dialog: 'Success Edit Movie', type: 'success'})
+    },
+    onError: () => {
+      toggleModal({dialog: 'Sorry, there is an error', type: 'error'})
     }
   })
   const [addSeries] = useMutation(ADD_SERIES, {
     onCompleted: () => {
       refetch()
       close()
+      toggleModal({dialog: 'Success Add Series', type: 'success'})
+    },
+    onError: () => {
+      toggleModal({dialog: 'Sorry, there is an error', type: 'error'})
     }
   })
   const [editSeries] = useMutation(EDIT_SERIES, {
     onCompleted: () => {
       refetch()
       close()
+      toggleModal({dialog: 'Success Edit Series', type: 'success'})
+    },
+    onError: () => {
+      toggleModal({dialog: 'Sorry, there is an error', type: 'error'})
     }
   })
 
@@ -70,17 +87,37 @@ function Form ({ toggleForm, refetch, isEdit, toggleEdit, service }) {
 
   const submitting = (e) => {
     e.preventDefault()
-    if (service === 'movies') {
-      if (isEdit) {
-        editMovie({variables: input})
-      } else {
-        addMovie({variables: input})
-      }
-    } else if (service === 'series') {
-      if (isEdit) {
-        editSeries({variables: input})
-      } else {
-        addSeries({variables: input})
+    const warnings = []
+    if (input.title === '' || input.title.trim() === '') {
+      warnings.push('Title Required')
+    }
+    if (input.overview === '' || input.overview.trim() === '') {
+      warnings.push('Overview Required')
+    }
+    if (input.poster_path === '' || input.poster_path.trim() === '') {
+      warnings.push('Poster Path Required')
+    }
+    if (input.popularity === '' || input.popularity < 0 || input.popularity > 5) {
+      warnings.push('Popularity Must Between 0 - 5')
+    }
+
+    const warning = warnings.join(', ')
+
+    if (warnings.length > 0) {
+      toggleModal({dialog: warning, type: 'error'})
+    } else {
+      if (service === 'movies') {
+        if (isEdit) {
+          editMovie({variables: input})
+        } else {
+          addMovie({variables: input})
+        }
+      } else if (service === 'series') {
+        if (isEdit) {
+          editSeries({variables: input})
+        } else {
+          addSeries({variables: input})
+        }
       }
     }
   }
@@ -115,7 +152,6 @@ function Form ({ toggleForm, refetch, isEdit, toggleEdit, service }) {
               placeholder="Title"
               value={input.title}
               onChange={inputChange}
-              required={true}
             />
             <input
               name="poster_path"
@@ -124,7 +160,6 @@ function Form ({ toggleForm, refetch, isEdit, toggleEdit, service }) {
               placeholder="Poster"
               value={input.poster_path}
               onChange={inputChange}
-              required={true}
             />
             <textarea
               name="overview"
@@ -132,7 +167,6 @@ function Form ({ toggleForm, refetch, isEdit, toggleEdit, service }) {
               placeholder="Overview"
               value={input.overview}
               onChange={inputChange}
-              required={true}
             />
             <input
               name="popularity"
@@ -144,7 +178,6 @@ function Form ({ toggleForm, refetch, isEdit, toggleEdit, service }) {
               step="0.1"
               value={input.popularity}
               onChange={inputChange}
-              required={true}
             />
             <div className="w-7/12">
               <div className="flex flex-wrap">

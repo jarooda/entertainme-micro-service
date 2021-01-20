@@ -5,5 +5,6 @@ import Card from './Card'
 import Button from './Button'
 import Form from './Form'
 import CardDetail from './CardDetail'
+import PopUp from './PopUp'
 
-export { Form, Navbar, Slide, Loading, Card, Button, CardDetail }
+export { Form, Navbar, Slide, Loading, Card, Button, CardDetail, PopUp }

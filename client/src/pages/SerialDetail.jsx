@@ -26,7 +26,7 @@ function SerialDetail () {
     return <div className="flex h-96 justify-center items-end"><Loading/></div>
   }
   if (error) {
-    return <div className="flex h-96 justify-center items-center text-white text-4xl">Oops there is an error...</div>
+    return <div className="flex h-96 justify-center items-center text-white text-4xl">Oops there is an error or data that you find is not found...</div>
   }
   return (
     <div>
@@ -48,6 +48,7 @@ function SerialDetail () {
           data={data.serial} 
           toggleForm={toggleForm}
           toggleEdit={toggleEdit}
+          service="series"
           />
       </div>
     </div>

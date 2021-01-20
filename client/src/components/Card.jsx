@@ -1,21 +1,31 @@
 import React from 'react'
 import { Button } from './index'
 import { useHistory } from 'react-router-dom'
-import { useMutation } from '@apollo/client'
-import { DELETE_MOVIES, DELETE_SERIES } from '../services'
+import { useMutation, useQuery } from '@apollo/client'
+import { DELETE_MOVIES, DELETE_SERIES, GET_FAVORITES } from '../services'
+import { favoriteMovies, favoriteSeries, toggleModal } from '../cache'
 
-function Card ({ data, refetch, toggleForm, toggleEdit, service }) {
+function Card ({ data, refetch, toggleForm, toggleEdit, service, inFavorite }) {
   const [deleteMovie] = useMutation(DELETE_MOVIES, {
     onCompleted: () => {
       refetch()
+      toggleModal({dialog: 'Deleted Successfully', type: 'success'})
+    },
+    onError: () => {
+      toggleModal({dialog: 'Sorry, there is an error', type: 'error'})
     }
   })
   const [deleteSeries] = useMutation(DELETE_SERIES, {
     onCompleted: () => {
       refetch()
+      toggleModal({dialog: 'Deleted Successfully', type: 'success'})
+    },
+    onError: () => {
+      toggleModal({dialog: 'Sorry, there is an error', type: 'error'})
     }
   })
   const history = useHistory()
+  const { data: fav } = useQuery(GET_FAVORITES)
 
   const removeData = ({_id}) => {
     if (service === 'movies') {
@@ -30,8 +40,19 @@ function Card ({ data, refetch, toggleForm, toggleEdit, service }) {
     toggleEdit(data)
   }
 
+  const toFavorite = () => {
+    if (service === 'movies') {
+      const prev = favoriteMovies()
+      favoriteMovies([...prev, data])
+    } else if (service === 'series') {
+      const prev = favoriteSeries()
+      favoriteSeries([...prev, data])
+    }
+    toggleModal({dialog: 'Success Add to Favorite', type: 'success'})
+  }
+
   return (
-    <div className="col-span-2 border-t-8 border-blue-500 hover:border-green-600 bg-gray-100 text-black rounded-md p-4 flex flex-col items-center">
+    <div className="lg:col-span-2 md:col-span-3 col-span-6 border-t-8 border-blue-500 hover:border-green-600 bg-gray-100 text-black rounded-md p-4 flex flex-col items-center">
       <div className="flex w-full">
         <img src={data.poster_path} alt={data.title} className="h-60 w-40 rounded-md"/>
         <div className="flex flex-col text-left ml-4 break-all w-full">
@@ -51,11 +72,23 @@ function Card ({ data, refetch, toggleForm, toggleEdit, service }) {
           </div>
         </div>
       </div>
-      <div className="flex w-10/12 justify-around mt-3">
-        <Button name="Add To Favorites" color="blue"/>
-        <Button name="Edit" color="green" func={showEditForm}/>
-        <Button name="Delete" color="red" func={removeData} param={{_id: data._id}}/>
-      </div>
+      {
+          inFavorite
+          ?
+          ''
+          :
+          <div className="flex w-10/12 justify-around mt-3">
+            <Button name="Edit" color="green" func={showEditForm}/>
+            {
+              fav.moviesItem.some(e => e._id === data._id) || fav.seriesItem.some(e => e._id === data._id)
+              ?
+              ''
+              :
+              <Button name="Add To Favorites" color="blue" func={toFavorite}/>
+            }
+            <Button name="Delete" color="red" func={removeData} param={{_id: data._id}}/>
+          </div>
+        }
     </div>
   )
 }

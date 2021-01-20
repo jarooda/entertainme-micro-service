@@ -9,7 +9,8 @@ function MovieDetail () {
   const { data, error, loading, refetch } = useQuery(FETCH_ONE_MOVIE, {
     variables: {
       _id: id
-    }
+    },
+    fetchPolicy: "network-only"
   })
   const [ showForm, setShowForm ] = useState(false)
   const [ isEdit, setIsEdit ] = useState(false)
@@ -27,7 +28,7 @@ function MovieDetail () {
     return <div className="flex h-96 justify-center items-end"><Loading/></div>
   }
   if (error) {
-    return <div className="flex h-96 justify-center items-center text-white text-4xl">Oops there is an error...</div>
+    return <div className="flex h-96 justify-center items-center text-white text-4xl">Oops there is an error or data that you find is not found...</div>
   }
   return (
     <div>
@@ -49,6 +50,7 @@ function MovieDetail () {
           data={data.movie} 
           toggleForm={toggleForm}
           toggleEdit={toggleEdit}
+          service="movies"
           />
       </div>
     </div>
