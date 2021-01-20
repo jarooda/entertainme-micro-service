@@ -1,5 +1,6 @@
 const db = require('../config/mongo')
-const Movies = db.collection("movies")
+const collection = process.env.COLLECTION_NAME || "movies"
+const Movies = db.collection(collection)
 const { ObjectID } = require('mongodb')
 
 class MovieModel {
